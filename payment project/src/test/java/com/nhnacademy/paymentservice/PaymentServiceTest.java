@@ -64,25 +64,39 @@ public class PaymentServiceTest {
     @Test
     @DisplayName("사용자의 쿠폰을 1장을 가져오는데, 반드시 1000원이 뽑히는가?")
     void coupon_is_1000_coupon(){
+        int id = 0;
+        Account account = new Account(id);
+        when(repo.getAccountById(id)).thenReturn(account);
+        service.pay(500, id);
+        assertThat(account.getCouponCount()).isEqualTo(2);
+        verify(repo).getAccountById(id);
         // Account를 뽑아오고, 사이즈가 0 이상이면 쿠폰을 1번 가져오고 1000원 할인 쿠폰인가?.
 
     }
     @Test
     @DisplayName("사용자의 쿠폰을 2장을 가져오는데, 2번째 쿠폰은 반드시 10%쿠폰이 뽑히는가?")
     void coupon_is_10percent_coupon(){
+        int id = 0;
+        Account account = new Account(id);
+        when(repo.getAccountById(id)).thenReturn(account);
+        service.pay(500, id);
+        Coupon coupon = account.getCoupon();
+        assertThat(account.getCouponCount()).isEqualTo(1);
+        assertThat(coupon).isEqualTo(Coupon.TEN);
+        verify(repo).getAccountById(id);
         // Account를 뽑아오고, 사이즈가 0 이상이면 쿠폰을 3번 가져온다.
 
     }
     @Test
     @DisplayName("사용자의 쿠폰을 3장을 가져오는데, 3번쨰는 반드시 20%쿠폰이 뽑히는가?")
     void coupon_is_20percent_coupon(){
-
+        return;
 
     }
 
     @Test
     @DisplayName("사용자의 쿠폰을 4번 뽑는데, 4번째는 예외를 던지는가?")
-    void coupon_is_20percent_coupon(){
+    void throw_coupon_is_not_found_exception(){
         // Account를 뽑아오고, 사이즈가 0 이상이면 쿠폰을 4번 가져온다 예외 발생.
 
     }
