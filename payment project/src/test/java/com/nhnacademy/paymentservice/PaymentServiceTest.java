@@ -18,11 +18,13 @@ import org.junit.jupiter.api.Test;
 public class PaymentServiceTest {
     PaymentService service;
     AccountRepository repo;
+    Calculator calculator;
 
     @BeforeEach
     void setUp() {
         repo = mock(AccountRepository.class);
         service = new PaymentService(repo);
+        calculator = new Calculator();
     }
 
     @Test
@@ -115,5 +117,19 @@ public class PaymentServiceTest {
             .isInstanceOf(CouponIsEmptyException.class)
             .hasMessageContaining("쿠폰","0개");
         verify(repo).getAccountById(id);
+    }
+
+    @Test
+    @DisplayName("쿠폰 적용한 금액 산출하기 (실금액 산출)")
+    void applied_coupon_and_get_balance(){
+        int id = 0;
+        int amount = 1000;
+        Account account = new Account(id);
+        when(repo.getAccountById(id)).thenReturn(account);
+        when(calculator.applyCoupon(amount, Coupon.ONE_THOUSON)).thenReturn(0);
+        service.pay(amount, id);
+
+        verify(calculator).applyCoupon(amount, Coupon.ONE_THOUSON);
+        // amount는 결제 대상금액 여기서는 500원
     }
 }
