@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.nhnacademy.account.Account;
 import com.nhnacademy.accountrepository.AccountRepository;
+import com.nhnacademy.calculator.Calculator;
 import com.nhnacademy.coupon.Coupon;
 import com.nhnacademy.exceptions.AmountTargetIsMinusException;
 import com.nhnacademy.exceptions.CouponIsEmptyException;
