@@ -3,7 +3,6 @@ package com.nhnacademy.accountrepository;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-import com.nhnacademy.Account;
 import com.nhnacademy.exceptions.AccountAccessFailException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

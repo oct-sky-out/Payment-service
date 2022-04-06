@@ -1,6 +1,6 @@
 package com.nhnacademy.accountrepository;
 
-import com.nhnacademy.Account;
+import com.nhnacademy.account.Account;
 import com.nhnacademy.exceptions.AccountAccessFailException;
 import java.util.HashMap;
 import java.util.Map;
