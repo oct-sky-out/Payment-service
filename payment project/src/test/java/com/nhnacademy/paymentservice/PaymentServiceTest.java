@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import com.nhnacademy.account.Account;
 import com.nhnacademy.accountrepository.AccountRepository;
-import com.nhnacademy.calculator.Calculator;
 import com.nhnacademy.coupon.Coupon;
 import com.nhnacademy.exceptions.AmountTargetIsMinusException;
 import com.nhnacademy.exceptions.CouponIsEmptyException;
@@ -19,13 +18,11 @@ import org.junit.jupiter.api.Test;
 public class PaymentServiceTest {
     PaymentService service;
     AccountRepository repo;
-    Calculator calculator;
 
     @BeforeEach
     void setUp() {
         repo = mock(AccountRepository.class);
-        calculator = mock(Calculator.class);
-        service = new PaymentService(repo, calculator);
+        service = new PaymentService(repo);
     }
 
     @Test
@@ -42,7 +39,8 @@ public class PaymentServiceTest {
     @DisplayName("customer id로 account정보를 가져온다")
     void get_account_by_customer_id(){
         int id = 0;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         // repo.getAccountById(id)를 호출하면 account를 리턴한다.
         service.pay(500, id);
@@ -54,7 +52,8 @@ public class PaymentServiceTest {
     @DisplayName("사용자의 쿠폰을 가져올 수 있는가?")
     void get_account_coupon(){
         int id = 0;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         service.pay(500, id);
 
@@ -68,7 +67,8 @@ public class PaymentServiceTest {
     @DisplayName("사용자의 쿠폰을 1장을 가져오는데, 반드시 1000원이 뽑히는가?")
     void coupon_is_1000_coupon(){
         int id = 0;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         service.pay(500, id);
         assertThat(account.getCouponCount()).isEqualTo(2);
@@ -80,7 +80,8 @@ public class PaymentServiceTest {
     @DisplayName("사용자의 쿠폰을 2장을 가져오는데, 2번째 쿠폰은 반드시 10%쿠폰이 뽑히는가?")
     void coupon_is_10percent_coupon(){
         int id = 0;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         service.pay(500, id);
         Coupon coupon = account.getCoupon();
@@ -94,7 +95,8 @@ public class PaymentServiceTest {
     @DisplayName("사용자의 쿠폰을 3장을 가져오는데, 3번쨰는 반드시 20%쿠폰이 뽑히는가?")
     void coupon_is_20percent_coupon(){
         int id = 0 ;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         service.pay(500,id);
         account.getCoupon();
@@ -109,7 +111,8 @@ public class PaymentServiceTest {
     void throw_coupon_is_not_found_exception(){
         // Account의 쿠폰을 4번 뽑으면, 예외를 발생.
         int id = 0;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
         service.pay(500,id);
         account.getCoupon();
@@ -121,16 +124,13 @@ public class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 적용한 금액 산출하기 (실금액 산출)")
-    void applied_coupon_and_get_balance(){
+    @DisplayName("유저의 계산 후 잔액 산출하기")
+    void calculate_after_result_amount(){
         int id = 0;
-        int amount = 1000;
-        Account account = new Account(id);
+        int balance = 10_000;
+        Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
-        when(calculator.applyCoupon(amount, Coupon.ONE_THOUSON)).thenReturn(0);
-        service.pay(amount, id);
 
-        verify(calculator).applyCoupon(amount, Coupon.ONE_THOUSON);
-        // amount는 결제 대상금액 여기서는 500원
+        assertThat(service.pay(5000,id).getBalance()).isEqualTo(10_000); // 1000원
     }
 }

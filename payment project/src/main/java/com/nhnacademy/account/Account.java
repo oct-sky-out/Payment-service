@@ -6,19 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
-    private int customerId;
     private final List<Coupon> coupons = new ArrayList<>();
+    private int customerId;
+    private int balance;
 
-    public Account(int customerId) {
+    public Account(int customerId, int balance) {
         this.customerId = customerId;
+        this.balance = balance;
 
         coupons.add(Coupon.ONE_THOUSON);
         coupons.add(Coupon.TEN);
         coupons.add(Coupon.TWENTY);
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
     public Coupon getCoupon() {
@@ -31,6 +37,4 @@ public class Account {
     public int getCouponCount(){
         return this.coupons.size();
     }
-
-
 }
