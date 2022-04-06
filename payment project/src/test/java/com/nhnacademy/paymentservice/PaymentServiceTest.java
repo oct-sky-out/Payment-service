@@ -42,7 +42,7 @@ public class PaymentServiceTest {
         Account account = new Account(id);
         when(repo.getAccountById(id)).thenReturn(account);
         // repo.getAccountById(id)를 호출하면 account를 리턴한다.
-        service.pay(500,id);
+        service.pay(500, id);
         verify(repo).getAccountById(id);
         // 검증한다. repo를, getAccountById(id);를 호출했니?
     }
@@ -56,7 +56,7 @@ public class PaymentServiceTest {
         service.pay(500, id);
 
         // Account를 뽑아오고, 사이즈가 0 이상인가?
-        assertThat(account.getCouponCount()).isEqualTo(3);
+        assertThat(account.getCouponCount() > 0).isTrue();
 
         verify(repo).getAccountById(id);
     }
@@ -90,8 +90,15 @@ public class PaymentServiceTest {
     @Test
     @DisplayName("사용자의 쿠폰을 3장을 가져오는데, 3번쨰는 반드시 20%쿠폰이 뽑히는가?")
     void coupon_is_20percent_coupon(){
-        return;
-
+        int id = 0 ;
+        Account account = new Account(id);
+        when(repo.getAccountById(id)).thenReturn(account);
+        service.pay(500,id);
+        account.getCoupon();
+        Coupon coupon = account.getCoupon();
+        assertThat(account.getCouponCount()).isEqualTo(0);
+        assertThat(coupon).isEqualTo(Coupon.TWENTY);
+        verify(repo).getAccountById(id);
     }
 
     @Test
