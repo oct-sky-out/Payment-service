@@ -18,14 +18,14 @@ public enum Coupon implements Discountable  {
     TEN(0, 0.1) {
         @Override
         public int discount(int balance) {
-            return 0;
+            return balance - (int)(balance * this.rate);
         }
     },
 
     TWENTY(0, 0.2){
         @Override
         public int discount(int balance){
-            return 0;
+            return balance - (int)(balance * this.rate);
         }
     }
     ;

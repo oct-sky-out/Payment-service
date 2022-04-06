@@ -9,14 +9,25 @@ public class Account {
     private final List<Coupon> coupons = new ArrayList<>();
     private int customerId;
     private int balance;
+    private int point;
+
 
     public Account(int customerId, int balance) {
         this.customerId = customerId;
         this.balance = balance;
+        this.point = 0;
 
         coupons.add(Coupon.ONE_THOUSON);
         coupons.add(Coupon.TEN);
         coupons.add(Coupon.TWENTY);
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
+
+    public int getPoint() {
+        return point;
     }
 
     public int getBalance() {

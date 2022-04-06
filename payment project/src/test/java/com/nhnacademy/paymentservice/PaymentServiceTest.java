@@ -11,6 +11,7 @@ import com.nhnacademy.accountrepository.AccountRepository;
 import com.nhnacademy.coupon.Coupon;
 import com.nhnacademy.exceptions.AmountTargetIsMinusException;
 import com.nhnacademy.exceptions.CouponIsEmptyException;
+import com.nhnacademy.exceptions.NotEnoughMoneyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -124,13 +125,29 @@ public class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 계산 후 잔액 산출하기")
+    @DisplayName("유저의 계산 후 잔액 산출후 부족하면 예외던지기")
     void calculate_after_result_amount(){
         int id = 0;
         int balance = 10_000;
         Account account = new Account(id, balance);
         when(repo.getAccountById(id)).thenReturn(account);
-
-        assertThat(service.pay(5000,id).getBalance()).isEqualTo(10_000); // 1000원
+        assertThat(service.pay(5000,id).getBalance()).isEqualTo(6000); // 1000원
+        assertThat(service.pay(5000,id).getBalance()).isEqualTo(1500); // 10% 할인
+        assertThatThrownBy(()-> service.pay(5000,id).getBalance())
+            .isInstanceOf(NotEnoughMoneyException.class)
+            .hasMessageContaining("잔액","부족");
     }
+
+    @Test
+    @DisplayName("안부족하면 결제 후 적립금 넣고 확인")
+    void if_enough_money_acculmulate_point(){
+        int id = 0;
+        int balance = 10_000;
+        Account account = new Account(id, balance);
+        when(repo.getAccountById(id)).thenReturn(account);
+        assertThat(service.pay(5000,id).getBalance()).isEqualTo(6000); // 1000원
+        assertThat(service.pay(5000,id).getBalance()).isEqualTo(1500); // 10% 할인
+        assertThat(account.getPoint()).isEqualTo(85); // 적립금 1퍼센트 설정 구현 필요.
+    }
+
 }
