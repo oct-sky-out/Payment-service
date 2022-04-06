@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 import com.nhnacademy.account.Account;
 import com.nhnacademy.accountrepository.AccountRepository;
 import com.nhnacademy.coupon.Coupon;
-import com.nhnacademy.exceptions.AccountAccessFailException;
 import com.nhnacademy.exceptions.AmountTargetIsMinusException;
+import com.nhnacademy.exceptions.CouponIsEmptyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,8 +104,16 @@ public class PaymentServiceTest {
     @Test
     @DisplayName("사용자의 쿠폰을 4번 뽑는데, 4번째는 예외를 던지는가?")
     void throw_coupon_is_not_found_exception(){
-        // Account를 뽑아오고, 사이즈가 0 이상이면 쿠폰을 4번 가져온다 예외 발생.
-
+        // Account의 쿠폰을 4번 뽑으면, 예외를 발생.
+        int id = 0;
+        Account account = new Account(id);
+        when(repo.getAccountById(id)).thenReturn(account);
+        service.pay(500,id);
+        account.getCoupon();
+        account.getCoupon();
+        assertThatThrownBy(() -> account.getCoupon())
+            .isInstanceOf(CouponIsEmptyException.class)
+            .hasMessageContaining("쿠폰","0개");
+        verify(repo).getAccountById(id);
     }
-
 }
