@@ -24,8 +24,8 @@ public class PaymentServiceTest {
     @BeforeEach
     void setUp() {
         repo = mock(AccountRepository.class);
-        service = new PaymentService(repo);
-        calculator = new Calculator();
+        calculator = mock(Calculator.class);
+        service = new PaymentService(repo, calculator);
     }
 
     @Test
